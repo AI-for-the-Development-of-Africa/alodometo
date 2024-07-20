@@ -3,6 +3,7 @@
 # backend
 
 backend/**/venv/
+backend/venv/
 backend/assistant/.env
 
 # Django-related files

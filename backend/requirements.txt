@@ -1,0 +1,8 @@
+Django
+django-environ
+djangorestframework
+google-generativeai
+SpeechRecognition
+pydub
+django-cors-headers
+gTTS
