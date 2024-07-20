@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -14,7 +13,7 @@ class AudioScreen extends ConsumerWidget {
 
     Widget animationWidget;
 
-if (audioState is AudioInitial || audioState is AudioPermissionGranted) {
+    if (audioState is AudioInitial || audioState is AudioPermissionGranted) {
       animationWidget = Lottie.asset('assets/animations/initial_state.json');
     } else if (audioState is AudioPermissionDenied) {
       animationWidget = Text('Microphone permission denied');
@@ -49,17 +48,34 @@ if (audioState is AudioInitial || audioState is AudioPermissionGranted) {
               children: [
                 ElevatedButton.icon(
                   onPressed: () {
-                     if (audioState is AudioInitial || 
+                    if (audioState is AudioInitial ||
                         audioState is AudioPermissionGranted ||
                         audioState is AudioRecorded ||
                         audioState is AudioAIResponse) {
                       ref.read(audioProvider.notifier).startRecording();
                     } else if (audioState is AudioRecording) {
                       ref.read(audioProvider.notifier).stopRecording();
-                    }
+                      
+                    } 
+
+                     
                   },
-                  icon: Icon(Icons.record_voice_over, color: Colors.white),
-                  label: Text('Record', style: TextStyle(color: Colors.white)),
+                  icon: Icon(
+                      audioState is AudioInitial ||
+                              audioState is AudioPermissionGranted ||
+                              AudioState is AudioRecorded ||
+                              audioState is AudioAIResponse
+                          ? Icons.record_voice_over
+                          : Icons.stop_circle,
+                      color: Colors.white),
+                  label: Text(
+                      audioState is AudioInitial ||
+                              audioState is AudioPermissionGranted ||
+                              AudioState is AudioRecorded ||
+                              audioState is AudioAIResponse
+                          ? 'Record'
+                          : 'Stop',
+                      style: TextStyle(color: Colors.white)),
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all<Color>(
                       Theme.of(context).colorScheme.primary,
@@ -73,29 +89,29 @@ if (audioState is AudioInitial || audioState is AudioPermissionGranted) {
                     }
                   },
                   icon: Icon(Icons.play_circle, color: Colors.white),
-                  label: Text('Play', style: TextStyle(color: Colors.white)),
+                  label: Text('Play AI Response', style: TextStyle(color: Colors.white)),
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all<Color>(
                       Theme.of(context).colorScheme.primary,
                     ),
                   ),
                 ),
-                ElevatedButton.icon(
-                  onPressed: () {
-                    if (audioState is AudioRecording) {
-                      ref.read(audioProvider.notifier).stopRecording();
-                    } else if (audioState is AudioPlaying) {
-                      ref.read(audioProvider.notifier).stopPlaying();
-                    }
-                  },
-                  icon: Icon(Icons.stop_circle, color: Colors.white),
-                  label: Text('Stop', style: TextStyle(color: Colors.white)),
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(
-                      Theme.of(context).colorScheme.primary,
-                    ),
-                  ),
-                ),
+                // ElevatedButton.icon(
+                //   onPressed: () {
+                //     if (audioState is AudioRecording) {
+                //       ref.read(audioProvider.notifier).stopRecording();
+                //     } else if (audioState is AudioPlaying) {
+                //       ref.read(audioProvider.notifier).stopPlaying();
+                //     }
+                //   },
+                //   icon: Icon(Icons.stop_circle, color: Colors.white),
+                //   label: Text('Stop', style: TextStyle(color: Colors.white)),
+                //   style: ButtonStyle(
+                //     backgroundColor: MaterialStateProperty.all<Color>(
+                //       Theme.of(context).colorScheme.primary,
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           ],
