@@ -1,3 +1,8 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
+import 'package:alo_do_me_to/src/core/services/voice_assistant.service.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:record/record.dart';
 import 'package:path_provider/path_provider.dart';
@@ -22,9 +27,18 @@ class AudioPlaying extends AudioState {
   AudioPlaying({required this.path});
 }
 
+class AudioAIResponse extends AudioState {
+  final String text;
+  final String audioBase64;
+  AudioAIResponse(this.text, this.audioBase64);
+}
+
 class AudioNotifier extends StateNotifier<AudioState> {
+  final AudioPlayer _audioPlayer = AudioPlayer();
   final _record = AudioRecorder();
    String? _lastRecordedPath;
+
+ final VoiceAssistantService _service = VoiceAssistantService();
 
   AudioNotifier() : super(AudioInitial()) {
     checkPermissions();
@@ -49,12 +63,35 @@ class AudioNotifier extends StateNotifier<AudioState> {
       );
     }
   }
-
- Future<void> stopRecording() async {
+Future<void> stopRecording() async {
     final path = await _record.stop();
     if (path != null) {
       _lastRecordedPath = path;
       state = AudioRecorded(path);
+      
+      // Process the recorded audio
+      await processRecordedAudio(path);
+    }
+  }
+
+  Future<void> processRecordedAudio(String path) async {
+    try {
+      Uint8List audioBytes = await File(path).readAsBytes();
+      String text = await _service.recordAudio(audioBytes);
+      Map<String, dynamic> aiResponse = await _service.processAudio(text);
+      
+      state = AudioAIResponse(aiResponse['response'], aiResponse['audio']);
+    } catch (e) {
+      print("Error processing audio: $e");
+      // Handle error (e.g., show error message to user)
+    }
+  }
+
+  Future<void> playAIResponse() async {
+    if (state is AudioAIResponse) {
+      final aiState = state as AudioAIResponse;
+      final audioBytes = base64Decode(aiState.audioBase64);
+      await _audioPlayer.play(BytesSource(audioBytes));
     }
   }
 

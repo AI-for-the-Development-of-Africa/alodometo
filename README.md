@@ -1,5 +1,5 @@
 
-# alo_do_me_to
+# alodometo
 alɔdómɛtɔ́ est un assistant vocal en langues locales
 
 - [Presentation of the project](https://lablab.ai/event/benin-multimodal-ai-hackathon/aida/al%C9%94-do-m%C9%9B-t%C9%94-assistant-vocal-multifonctionnel)
