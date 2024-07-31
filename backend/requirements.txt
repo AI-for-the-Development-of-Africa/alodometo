@@ -6,3 +6,17 @@ SpeechRecognition
 pydub
 django-cors-headers
 gTTS
+
+langchain
+langchain_google_genai
+langchain_chroma
+langchain_community
+wikipedia
+diffusers
+invisible_watermark
+transformers
+accelerate 
+safetensors
+google.generativeai
+environ
+python-dotenv
