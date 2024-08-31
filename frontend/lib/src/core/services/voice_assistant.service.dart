@@ -3,8 +3,8 @@ import 'dart:typed_data';
 
 class VoiceAssistantService {
   final Dio _dio = Dio();
-  // final String baseUrl = 'http://10.0.2.2:8000/api';  // Use this for Android emulator
-  final String baseUrl = 'https://11cf-156-0-212-7.ngrok-free.app/api';  // Use ngrok
+  final String baseUrl = 'http://10.0.2.2:8000/api';  // Use this for Android emulator
+  // final String baseUrl = 'https://11cf-156-0-212-7.ngrok-free.app/api';  // Use ngrok
 
   Future<String> recordAudio(Uint8List audioBytes) async {
     FormData formData = FormData.fromMap({
