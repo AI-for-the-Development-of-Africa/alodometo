@@ -28,7 +28,7 @@ SECRET_KEY = "django-insecure-^vp=$#u^(clpirxtk*q)1hrol)a4s$+icfc=vi=l_@3ojn-@e9
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["11cf-156-0-212-7.ngrok-free.app"]
+ALLOWED_HOSTS = ["9487-41-138-89-254.ngrok-free.app"]
 
 # Gemini API Key
 GEMINI_API_KEY = ENV.str('GEMINI_API_KEY')
