@@ -13,6 +13,9 @@ from gtts import gTTS
 import io
 import base64
 import logging
+import re
+import json
+# import JsonResponse
 
 logger = logging.getLogger(__name__)
 
@@ -74,3 +77,49 @@ class ProcessAudioView(APIView):
         
         logger.warning("No text provided")
         return Response({'success': False, 'error': 'No text provided'}, status=status.HTTP_400_BAD_REQUEST)
+    
+
+class YorubaToEnglishView(APIView):
+    def post(self, request):
+        data = json.loads(request.body)
+        yoruba_text = data.get('text')
+
+        if not yoruba_text:
+            return Response({'success': False, 'error': 'No text provided'}, status=400)
+        # yoruba_text = request.data.get('text')
+        # if not yoruba_text:
+        #     logger.warning("No Yoruba text provided")
+        #     return Response({'success': False, 'error': 'No text provided'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            logger.info(f"Translating Yoruba text: {yoruba_text}")
+            
+            system_instruction = """
+            You are an API. Logically transcribe the text written in Yoruba into English and give it to me in dict format 
+            as well as its translation text in Yoruba { text: ...., trans: ...... }. 
+            Return only the dict without anything else. 
+            Example: output = { language: ...., text: ...., text_translate: ...... }
+            """
+            
+            prompt_parts = [system_instruction, yoruba_text]
+            response = model.generate_content(prompt_parts)
+            
+            extracted_json = re.search(r'\{(.+?)\}', response.text, re.DOTALL)
+            if extracted_json:
+                extracted_dict = json.loads(extracted_json.group(0))
+                print(extracted_dict)
+                english_translation = extracted_dict.get("trans", "Translation not found")
+                # english_translation = f"Translation of: {yoruba_text}"
+                logger.info(f"English translation: {english_translation}")
+                return Response({
+                    'success': True,
+                    'yoruba_text': yoruba_text,
+                    'english_translation': english_translation
+                })
+            else:
+                logger.warning("Failed to extract translation")
+                return Response({'success': False, 'error': 'Failed to extract translation'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        except Exception as e:
+            logger.error(f"Error translating Yoruba text: {str(e)}", exc_info=True)
+            return Response({'success': False, 'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
