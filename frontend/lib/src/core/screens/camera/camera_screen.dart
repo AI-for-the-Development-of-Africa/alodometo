@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:alo_do_me_to/src/core/providers/camera_provider.dart';
+import 'package:alo_do_me_to/src/core/services/image_processing.service.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,6 +15,9 @@ class CameraScreen extends ConsumerStatefulWidget {
 class _CameraScreenState extends ConsumerState<CameraScreen> {
   String _statusMessage = '';
   final AudioPlayer _audioPlayer = AudioPlayer();
+  String _extractedText = '';
+  String _translatedText = '';
+  String _audioUrl = '';
 
   @override
   Widget build(BuildContext context) {
@@ -22,10 +27,6 @@ class _CameraScreenState extends ConsumerState<CameraScreen> {
       body: Center(
         child: _buildContent(cameraState),
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () => _showPickerDialog(context),
-      //   child: Icon(Icons.add_a_photo),
-      // ),
     );
   }
 
@@ -35,31 +36,15 @@ class _CameraScreenState extends ConsumerState<CameraScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-             ElevatedButton.icon(
-              onPressed: () {
-                ref.read(cameraProvider.notifier).pickImageFromCamera();
-              },
-              icon: const Icon(Icons.camera_alt, color: Colors.white),
-              label: const Text('Camera', style: TextStyle(color: Colors.white)),
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.primary,),
-              ),
-            ),
-            ElevatedButton.icon(
-              onPressed: () {
-                ref.read(cameraProvider.notifier).pickImageFromGallery();
-              },
-              icon: const Icon(Icons.photo_library, color: Colors.white),
-              label: const Text('Gallery', style: TextStyle(color: Colors.white)),
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.primary,),
-              ),
-            ),
-           
+            _buildButton(Icons.camera_alt, 'Camera', () {
+              ref.read(cameraProvider.notifier).pickImageFromCamera();
+            }),
+            _buildButton(Icons.photo_library, 'Gallery', () {
+              ref.read(cameraProvider.notifier).pickImageFromGallery();
+            }),
           ],
         ),
       );
-
     } else if (state is CameraLoading) {
       return const CircularProgressIndicator();
     } else if (state is CameraLoaded) {
@@ -71,111 +56,103 @@ class _CameraScreenState extends ConsumerState<CameraScreen> {
             height: 300,
           ),
           const SizedBox(height: 20),
-          ElevatedButton.icon(
-              onPressed: () => _showLanguageSelectionDialog(context),
-              icon: const Icon(Icons.play_circle, color: Colors.white),
-              label: const Text('Play', style: TextStyle(color: Colors.white)),
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.primary,),
+          _buildButton(Icons.play_circle, 'Process Image', () => _processImage(state.image)),
+          // if (_extractedText.isNotEmpty) Text('Extracted Text: $_extractedText'),
+
+      //     if (_extractedText.isNotEmpty)
+      // Padding(
+      //   padding: const EdgeInsets.all(8.0),
+      //   child: Text('Extracted Text: $_extractedText'),
+      // ),
+    if (_translatedText.isNotEmpty)
+      Card(
+        color: Theme.of(context).colorScheme.primary,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Translated Text:',
+                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
               ),
-            ),
-          
-          Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton.icon(
-              onPressed: () {
-                ref.read(cameraProvider.notifier).pickImageFromCamera();
-              },
-              icon: const Icon(Icons.camera_alt, color: Colors.white),
-              label: const Text('Camera', style: TextStyle(color: Colors.white)),
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.primary,),
+              const SizedBox(height: 8),
+              Text(
+                _translatedText,
+                style: TextStyle(color: Colors.white),
               ),
-            ),
-            ElevatedButton.icon(
-              onPressed: () {
-                ref.read(cameraProvider.notifier).pickImageFromGallery();
-              },
-              icon: const Icon(Icons.photo_library, color: Colors.white),
-              label: const Text('Gallery', style: TextStyle(color: Colors.white)),
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.primary,),
-              ),
-            ),
-            
-          ],
+            ],
+          ),
         ),
+      ),
+          // Text('Translated Text: $_translatedText'),
+          if (_audioUrl.isNotEmpty)
+            _buildButton(Icons.volume_up, 'Play Audio', () => _audioPlayer.play(UrlSource(_audioUrl))),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _buildButton(Icons.camera_alt, 'Camera', () {
+                ref.read(cameraProvider.notifier).pickImageFromCamera();
+              }),
+              _buildButton(Icons.photo_library, 'Gallery', () {
+                ref.read(cameraProvider.notifier).pickImageFromGallery();
+              }),
+            ],
+          ),
         ],
       );
     } else if (state is CameraError) {
-      return Text(state.message);
+      return Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _buildButton(Icons.camera_alt, 'Camera', () {
+              ref.read(cameraProvider.notifier).pickImageFromCamera();
+            }),
+            _buildButton(Icons.photo_library, 'Gallery', () {
+              ref.read(cameraProvider.notifier).pickImageFromGallery();
+            }),
+          ],
+        ),
+      );
     }
     return Container();
   }
 
-  void _showPickerDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext dialogContext) {
-        return AlertDialog(
-          title: const Text("Select option"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              ListTile(
-                leading: const Icon(Icons.photo_library),
-                title: const Text("Pick from Gallery"),
-                onTap: () {
-                  ref.read(cameraProvider.notifier).pickImageFromGallery();
-                  Navigator.of(dialogContext).pop();
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.photo_camera),
-                title: const Text("Take a Photo"),
-                onTap: () {
-                  ref.read(cameraProvider.notifier).pickImageFromCamera();
-                  Navigator.of(dialogContext).pop();
-                },
-              ),
-            ],
-          ),
-        );
-      },
+  Widget _buildButton(IconData icon, String label, VoidCallback onPressed) {
+    return ElevatedButton.icon(
+      onPressed: onPressed,
+      icon: Icon(icon, color: Colors.white),
+      label: Text(label, style: TextStyle(color: Colors.white)),
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.primary),
+      ),
     );
   }
 
-  void _showLanguageSelectionDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Select Language"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              ListTile(
-                title: const Text("Yoruba"),
-                onTap: () {
-                  _listenInLanguage(context, 'yoruba.mp3');
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
+  Future<void> _processImage(File imageFile) async {
+    try {
+    print("Hello");
+      setState(() {
+        _statusMessage = 'Processing image...';
+      });
 
-  void _listenInLanguage(BuildContext context, String audioFile) async {
-    await _audioPlayer.play(DeviceFileSource(audioFile));
-    setState(() {
-      _statusMessage = 'Terminer';
-    });
+      final result = await ImageProcessingService.processImage(imageFile);
+      print(result);
 
-    Timer(const Duration(seconds: 3), () {
+      setState(() {
+        _extractedText = result['extractedText'] ?? '';
+        _translatedText = result['translatedText'] ?? '';
+        _audioUrl = result['audioUrl'] ?? '';
+        _statusMessage = 'Image processed successfully';
+      });
+    } catch (e) {
+      setState(() {
+        _statusMessage = 'Error processing image: $e';
+      });
+    }
+
+    Timer(const Duration(seconds: 10), () {
       setState(() {
         _statusMessage = '';
       });

@@ -2,18 +2,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
-// États de la caméra
+// Camera states
 abstract class CameraState {}
-
 class CameraInitial extends CameraState {}
-
 class CameraLoading extends CameraState {}
-
 class CameraLoaded extends CameraState {
   final File image;
   CameraLoaded(this.image);
 }
-
 class CameraError extends CameraState {
   final String message;
   CameraError(this.message);
@@ -21,7 +17,7 @@ class CameraError extends CameraState {
 
 class CameraNotifier extends StateNotifier<CameraState> {
   final ImagePicker _picker = ImagePicker();
-
+  
   CameraNotifier() : super(CameraInitial());
 
   Future<void> pickImageFromGallery() async {
@@ -45,7 +41,7 @@ class CameraNotifier extends StateNotifier<CameraState> {
       if (pickedFile != null) {
         state = CameraLoaded(File(pickedFile.path));
       } else {
-        state = CameraError("No image selected");
+        state = CameraError("No image captured");
       }
     } catch (e) {
       state = CameraError(e.toString());

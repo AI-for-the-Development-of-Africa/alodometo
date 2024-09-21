@@ -6,13 +6,14 @@ import 'package:dio/dio.dart';
 
 class YorubaToEnglishService {
   final Dio _dio = Dio();
-  final String baseUrl = 'https://4cab-156-0-214-31.ngrok-free.app/api'; 
+  final String baseUrl = 'https://4738-41-138-89-216.ngrok-free.app/api'; 
   Future<String> translateYorubaToEnglish(String yorubaText) async {
     try {
       print('Attempting to translate: $yorubaText');
       print('Using URL: $baseUrl/translate-yoruba/');
       
       Response response = await _dio.post(
+        // '$baseUrl/llama-translate-yoruba/',
         '$baseUrl/translate-yoruba/',
         data: {'text': yorubaText},
         options: Options(
