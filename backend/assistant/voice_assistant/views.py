@@ -214,14 +214,15 @@ class CameraView(APIView):
             print(extracted_text)
 
             # Translate text (assuming it's in Yoruba)
-            prompt = f"Translate this English text to Yoruba: {extracted_text}"
+            prompt = f"Translate this English text to French: {extracted_text}"
+            # prompt = f"Please analyze the extracted text from the Goodreads image. After analyzing, summarize the key information in a structured format. This summary will then be translated into Yoruba: {extracted_text}"
             response = model.generate_content(prompt)
             print(response)
             translated_text = response.text
             logger.info(f"Translated text: {translated_text}")
             print(translated_text)
             # Convert translated text to speech
-            tts = gTTS(translated_text, lang='en')
+            tts = gTTS(translated_text, lang='fr')
             audio_io = io.BytesIO()
             tts.write_to_fp(audio_io)
             audio_io.seek(0)

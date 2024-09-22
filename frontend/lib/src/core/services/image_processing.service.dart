@@ -3,10 +3,11 @@ import 'package:dio/dio.dart';
 
 class ImageProcessingService {
   static final Dio _dio = Dio();
-  static const String _baseUrl = 'https://4738-41-138-89-216.ngrok-free.app/api';
+  static const String _baseUrl = 'https://8175-156-0-214-34.ngrok-free.app/api';
 
   static Future<Map<String, String>> processImage(File imageFile) async {
     try {
+      print(imageFile.path);
       String fileName = imageFile.path.split('/').last;
       FormData formData = FormData.fromMap({
         "image": await MultipartFile.fromFile(imageFile.path, filename: fileName),
