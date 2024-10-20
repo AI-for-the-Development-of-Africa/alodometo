@@ -1,6 +1,7 @@
 import 'package:alo_do_me_to/src/core/providers/bottom_navbar_provider.dart';
 import 'package:alo_do_me_to/src/core/screens/audio/audio_screen.dart';
 import 'package:alo_do_me_to/src/core/screens/camera/camera_screen.dart';
+import 'package:alo_do_me_to/src/core/screens/home/pdf_screen.dart.dart';
 import 'package:alo_do_me_to/src/core/screens/home/yoruba_to_english_text_screen.dart.dart';
 import 'package:alo_do_me_to/src/core/screens/home/widgets/bottom_navbar.dart';
 // import 'package:alo_do_me_to/src/core/screens/home/widgets/custom_drawer.dart';
@@ -17,7 +18,8 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedIndex = ref.watch(bottomNavbarProvider);
     final screens = [
-       const YorubaToEnglishTextScreen(),
+      //  const YorubaToEnglishTextScreen(),
+       const PdfScreen(),
        AudioScreen(),
        CameraScreen(),
       const ProfilScreen()

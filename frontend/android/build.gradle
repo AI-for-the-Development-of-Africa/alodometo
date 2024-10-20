@@ -17,3 +17,15 @@ tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }
 
+buildscript {
+    ext.kotlin_version = '1.7.10'  // Use the latest version
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.3.0'  // Use the latest version
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
