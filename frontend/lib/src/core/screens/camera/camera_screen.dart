@@ -8,6 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 
 class CameraScreen extends ConsumerStatefulWidget {
+  const CameraScreen({super.key});
+
   @override
   ConsumerState<CameraScreen> createState() => _CameraScreenState();
 }
@@ -79,7 +81,7 @@ class _CameraScreenState extends ConsumerState<CameraScreen> {
               const SizedBox(height: 8),
               Text(
                 _translatedText,
-                style: TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.white),
               ),
             ],
           ),
@@ -123,9 +125,9 @@ class _CameraScreenState extends ConsumerState<CameraScreen> {
     return ElevatedButton.icon(
       onPressed: onPressed,
       icon: Icon(icon, color: Colors.white),
-      label: Text(label, style: TextStyle(color: Colors.white)),
+      label: Text(label, style: const TextStyle(color: Colors.white)),
       style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.primary),
+        backgroundColor: WidgetStateProperty.all<Color>(Theme.of(context).colorScheme.primary),
       ),
     );
   }

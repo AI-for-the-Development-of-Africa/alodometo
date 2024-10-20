@@ -7,7 +7,7 @@ ThemeData lightMode = ThemeData(
     shadowColor: Colors.white,
   ),
   colorScheme: const ColorScheme.light(
-      background: Color(0xffffffff),
+      surface: Color(0xffffffff),
       primary: Color(0xff98198E),
       secondary: Color(0xffEC058E)),
   inputDecorationTheme:

@@ -1,5 +1,4 @@
 import 'package:alo_do_me_to/src/core/screens/home/widgets/drawer_header.dart';
-import 'package:alo_do_me_to/src/core/screens/profil/profil_screen.dart';
 import 'package:flutter/material.dart';
 
 class SpiderDrawer extends StatelessWidget {

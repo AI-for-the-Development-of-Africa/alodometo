@@ -3,7 +3,7 @@ import 'package:iconsax/iconsax.dart';
 // import 'package:url_launcher/url_launcher.dart';
 
 class CustomDrawer extends StatelessWidget {
-  const CustomDrawer({Key? key}) : super(key: key);
+  const CustomDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -11,13 +11,13 @@ class CustomDrawer extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            padding: EdgeInsets.only(top: 30),
-            alignment: Alignment(1, 1),
+            padding: const EdgeInsets.only(top: 30),
+            alignment: const Alignment(1, 1),
             child: IconButton(
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                icon: Icon(Iconsax.close_circle, size: 25,),
+                icon: const Icon(Iconsax.close_circle, size: 25,),
                 ),
           ),
           DrawerHeader(

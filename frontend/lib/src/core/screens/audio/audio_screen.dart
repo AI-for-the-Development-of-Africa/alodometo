@@ -7,6 +7,8 @@ import 'package:alo_do_me_to/src/core/providers/audio_provider.dart';
 class AudioScreen extends ConsumerWidget {
   final AudioPlayer _audioPlayer = AudioPlayer();
 
+  AudioScreen({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final audioState = ref.watch(audioProvider);
@@ -16,7 +18,7 @@ class AudioScreen extends ConsumerWidget {
     if (audioState is AudioInitial || audioState is AudioPermissionGranted) {
       animationWidget = Lottie.asset('assets/animations/initial_state.json');
     } else if (audioState is AudioPermissionDenied) {
-      animationWidget = Text('Microphone permission denied');
+      animationWidget = const Text('Microphone permission denied');
     } else if (audioState is AudioRecording) {
       animationWidget = Lottie.asset('assets/animations/new_recording.json');
     } else if (audioState is AudioRecorded) {
@@ -32,17 +34,17 @@ class AudioScreen extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
+            SizedBox(
               height: 200,
               child: animationWidget,
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             if (audioState is AudioAIResponse)
               Text(
-                "AI Response: ${(audioState as AudioAIResponse).text}",
+                "AI Response: ${(audioState).text}",
                 textAlign: TextAlign.center,
               ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -75,9 +77,9 @@ class AudioScreen extends ConsumerWidget {
                               audioState is AudioAIResponse
                           ? 'Record'
                           : 'Stop',
-                      style: TextStyle(color: Colors.white)),
+                      style: const TextStyle(color: Colors.white)),
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(
+                    backgroundColor: WidgetStateProperty.all<Color>(
                       Theme.of(context).colorScheme.primary,
                     ),
                   ),
@@ -88,10 +90,10 @@ class AudioScreen extends ConsumerWidget {
                       ref.read(audioProvider.notifier).playAIResponse();
                     }
                   },
-                  icon: Icon(Icons.play_circle, color: Colors.white),
-                  label: Text('Play AI Response', style: TextStyle(color: Colors.white)),
+                  icon: const Icon(Icons.play_circle, color: Colors.white),
+                  label: const Text('Play AI Response', style: TextStyle(color: Colors.white)),
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(
+                    backgroundColor: WidgetStateProperty.all<Color>(
                       Theme.of(context).colorScheme.primary,
                     ),
                   ),

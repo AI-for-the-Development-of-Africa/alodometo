@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:alo_do_me_to/src/core/providers/yoruba_to_english_provider.dart';
 // YorubaToEnglishTextScreen widget
 class YorubaToEnglishTextScreen extends ConsumerStatefulWidget {
-  const YorubaToEnglishTextScreen({Key? key}) : super(key: key);
+  const YorubaToEnglishTextScreen({super.key});
 
   @override
   _YorubaToEnglishTextScreenState createState() => _YorubaToEnglishTextScreenState();

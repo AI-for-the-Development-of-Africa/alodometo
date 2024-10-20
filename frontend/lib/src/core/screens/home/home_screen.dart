@@ -17,14 +17,14 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedIndex = ref.watch(bottomNavbarProvider);
     final screens = [
-       YorubaToEnglishTextScreen(),
+       const YorubaToEnglishTextScreen(),
        AudioScreen(),
        CameraScreen(),
       const ProfilScreen()
     ];
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.background,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         title: RichText(
             text: TextSpan(
               text: 'Alo Do ',

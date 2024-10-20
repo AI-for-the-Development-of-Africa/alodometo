@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 
 class ImageProcessingService {
   static final Dio _dio = Dio();
-  static const String _baseUrl = 'https://2610-41-138-91-169.ngrok-free.app/api';
+  static const String _baseUrl = 'https://4cbd-41-138-91-158.ngrok-free.app/api';
 
   static Future<Map<String, String>> processImage(File imageFile) async {
     try {
